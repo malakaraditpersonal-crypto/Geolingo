@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoLingo - Flag & Geography Academy</title>
+  <!-- Rounded Duolingo-style font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --duo-green: #58cc02;
+      --duo-green-shadow: #46a302;
+      --duo-blue: #1cb0f6;
+      --duo-blue-shadow: #1899d6;
+      --duo-red: #ff4b4b;
+      --duo-red-shadow: #ea2b2b;
+      --duo-orange: #ff9600;
+      --duo-gold: #ffc800;
+      --card-border: #e5e5e5;
+      --text-dark: #3c3c3c;
+      --text-muted: #888888;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      background-color: #eef2f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    /* Mobile-first app frame */
+    .app-viewport {
+      width: 100%;
+      max-width: 560px;
+      min-height: 100vh;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    @media (min-width: 600px) {
+      .app-viewport {
+        min-height: 94vh;
+        height: 94vh;
+        border-radius: 28px;
+        border: 3px solid #e2e8f0;
+      }
+    }
+
+    /* =======================================================
+       1. SPLASH SCREEN (First Screen User Sees)
+       ======================================================= */
+    .splash-screen {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 24px 30px;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+
+    .splash-screen.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .splash-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-owl {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 24px;
+      animation: splash-float 3s ease-in-out infinite;
+    }
+
+    @keyframes splash-float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    .splash-title {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--duo-green);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .splash-subtitle {
+      font-size: 17px;
+      font-weight: 700;
+      color: #64748b;
+      max-width: 320px;
+      line-height: 1.4;
+      margin-bottom: 26px;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 360px;
+    }
+
+    .feature-tag {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    /* Mode Navigation Tabs */
+    .mode-bar {
+      display: flex;
+      background: #f8fafc;
+      padding: 6px;
+      gap: 6px;
+      border-bottom: 2px solid #edf2f7;
+    }
+
+    .mode-pill {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .mode-pill.active {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      color: var(--duo-blue);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* Top Stats Bar */
+    .header-bar {
+      padding: 10px 18px 8px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      z-index: 10;
+    }
+
+    .progress-container {
+      flex: 1;
+      height: 14px;
+      background: #e5e7eb;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #58cc02, #79e01f);
+      border-radius: 20px;
+      transition: width 0.35s ease;
+    }
+
+    .stats-tray {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .stat-badge.streak { color: var(--duo-orange); }
+    .stat-badge.hearts { color: var(--duo-red); }
+
+    /* Main Lesson Body */
+    .lesson-content {
+      flex: 1;
+      padding: 12px 20px 145px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .question-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    /* Mascot Header Prompt */
+    .mascot-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .mascot-avatar {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      animation: gentle-bob 2.8s ease-in-out infinite;
+    }
+
+    @keyframes gentle-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: #ffffff;
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #555;
+      box-shadow: 0 3px 0 #ededed;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-left: 2px solid var(--card-border);
+      border-bottom: 2px solid var(--card-border);
+    }
+
+    /* =======================================================
+       2. EXTRA-LARGE FLAG STAGE (Now Big & Clear)
+       ======================================================= */
+    .flag-stage {
+      width: 100%;
+      height: 250px; /* Big stage */
+      background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
+      border: 3px solid #e2e8f0;
+      border-radius: 22px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+      padding: 12px;
+    }
+
+    /* Large Flag Image Styling */
+    .real-flag-img {
+      width: auto;
+      max-width: 95%;
+      height: auto;
+      max-height: 220px; /* Much larger display */
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18), 0 3px 8px rgba(0,0,0,0.12);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      animation: flagPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      object-fit: contain;
+    }
+
+    @keyframes flagPop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Blitz Timer Bar */
+    .timer-track {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      display: none;
+    }
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--duo-orange);
+      transition: width 1s linear;
+    }
+
+    /* Option Cards */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .duo-choice-card {
+      background: #ffffff;
+      border: 2px solid var(--card-border);
+      border-bottom: 5px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-dark);
+      transition: all 0.1s ease;
+      outline: none;
+      min-height: 52px;
+    }
+
+    .duo-choice-card:hover:not(.disabled) {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .duo-choice-card.selected {
+      background: #ddf4ff;
+      border-color: var(--duo-blue);
+      border-bottom: 5px solid var(--duo-blue-shadow);
+      color: var(--duo-blue-shadow);
+      transform: translateY(2px);
+    }
+
+    .choice-key {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #999;
+      font-weight: 900;
+    }
+
+    /* Slide-up Learning Sheet (Duolingo Style) */
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      border-top: 2px solid #e5e5e5;
+      background: #ffffff;
+      transition: background 0.25s;
+      z-index: 100;
+    }
+
+    .bottom-sheet.correct {
+      background: #d7ffb8;
+      border-top: 2px solid #b2ef82;
+    }
+
+    .bottom-sheet.wrong {
+      background: #ffdfe0;
+      border-top: 2px solid #ffb2b5;
+    }
+
+    /* Fact Learning Dossier */
+    .fact-dossier {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .fact-dossier.show { display: flex; }
+
+    .dossier-headline {
+      font-size: 18px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bottom-sheet.correct .dossier-headline { color: #3b8e00; }
+    .bottom-sheet.wrong .dossier-headline { color: #d62222; }
+
+    .fact-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .fact-chip {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .fact-chip span.label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+
+    .fact-banner-full {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      padding: 7px 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #333;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* 3D Duolingo Button */
+    .duo-btn {
+      width: 100%;
+      cursor: pointer;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      transition: all 0.1s ease;
+      outline: none;
+    }
+
+    .duo-btn.primary {
+      background: var(--duo-green);
+      color: #ffffff;
+      border-bottom: 5px solid var(--duo-green-shadow);
+    }
+    .duo-btn.primary:hover { filter: brightness(1.06); }
+    .duo-btn.primary:active {
+      transform: translateY(3px);
+      border-bottom: 2px solid var(--duo-green-shadow);
+    }
+
+    .duo-btn.disabled {
+      background: #e5e5e5;
+      color: #afafaf;
+      border-bottom: 5px solid #d0d0d0;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* End Screen Modals */
+    .screen-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .screen-overlay.active {
+      display: flex;
+      animation: flagPop 0.3s ease;
+    }
+
+    #confettiCanvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 600;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .shake-anim {
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- =======================================================
+         SPLASH SCREEN
+         ======================================================= -->
+    <div class="splash-screen" id="splashScreen">
+      <div class="splash-hero">
+        <!-- Friendly Waving GeoOwl SVG -->
+        <svg class="splash-owl" viewBox="0 0 100 100">
+          <circle cx="50" cy="54" r="38" fill="#58cc02" />
+          <circle cx="50" cy="58" r="28" fill="#79e01f" />
+          <!-- Waving wing -->
+          <path d="M 85 55 Q 96 35 85 24 Q 74 35 78 52 Z" fill="#46a302" />
+          <!-- Left wing -->
+          <path d="M 15 55 Q 8 68 18 78 Q 24 68 22 52 Z" fill="#46a302" />
+          <!-- Ears -->
+          <polygon points="20,24 32,32 18,40" fill="#46a302" />
+          <polygon points="80,24 68,32 82,40" fill="#46a302" />
+          <!-- Big Duo Eyes -->
+          <circle cx="36" cy="46" r="14" fill="#ffffff" />
+          <circle cx="64" cy="46" r="14" fill="#ffffff" />
+          <circle cx="39" cy="45" r="7" fill="#4b4b4b" />
+          <circle cx="63" cy="45" r="7" fill="#4b4b4b" />
+          <circle cx="41" cy="42" r="2.5" fill="#ffffff" />
+          <circle cx="65" cy="42" r="2.5" fill="#ffffff" />
+          <!-- Orange Beak -->
+          <polygon points="46,52 54,52 50,62" fill="#ff9600" />
+          <!-- Feet -->
+          <ellipse cx="38" cy="92" rx="8" ry="4" fill="#ff9600" />
+          <ellipse cx="62" cy="92" rx="8" ry="4" fill="#ff9600" />
+        </svg>
+
+        <h1 class="splash-title">GeoLingo</h1>
+        <p class="splash-subtitle">The fun, visual way to master world flags, capitals, and landmarks!</p>
+
+        <div class="feature-tags">
+          <div class="feature-tag">🚩 Real Flags</div>
+          <div class="feature-tag">🏛️ Capitals</div>
+          <div class="feature-tag">🌟 Famous For</div>
+          <div class="feature-tag">⚡ Blitz Mode</div>
+        </div>
+      </div>
+
+      <button class="duo-btn primary" onclick="game.startFromSplash()">PLAY NOW</button>
+    </div>
+
+    <!-- Mode Selector Navigation -->
+    <nav class="mode-bar">
+      <button class="mode-pill active" onclick="game.switchMode('flag')">🚩 Flag Quiz</button>
+      <button class="mode-pill" onclick="game.switchMode('capitals')">🏛️ Capitals</button>
+      <button class="mode-pill" onclick="game.switchMode('famous')">🌟 Famous For</button>
+      <button class="mode-pill" onclick="game.switchMode('blitz')">⚡ Blitz 10s</button>
+    </nav>
+
+    <!-- Top Status Bar -->
+    <header class="header-bar">
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="stats-tray">
+        <div class="stat-badge streak">🔥 <span id="streakCount">4</span></div>
+        <div class="stat-badge hearts">❤️ <span id="heartCount">5</span></div>
+      </div>
+    </header>
+
+    <!-- Main Game Area -->
+    <main class="lesson-content">
+      <div class="timer-track" id="timerTrack">
+        <div class="timer-fill" id="timerFill"></div>
+      </div>
+
+      <h1 class="question-title" id="questionTitle">Which country's flag is this?</h1>
+
+      <!-- Mascot Prompt -->
+      <div class="mascot-row">
+        <svg class="mascot-avatar" viewBox="0 0 100 100">
+          <circle cx="50" cy="54" r="38" fill="#58cc02" />
+          <circle cx="50" cy="58" r="28" fill="#79e01f" />
+          <polygon points="20,24 32,32 18,40" fill="#46a302" />
+          <polygon points="80,24 68,32 82,40" fill="#46a302" />
+          <circle cx="36" cy="46" r="14" fill="#ffffff" />
+          <circle cx="64" cy="46" r="14" fill="#ffffff" />
+          <circle cx="38" cy="46" r="7" fill="#4b4b4b" />
+          <circle cx="62" cy="46" r="7" fill="#4b4b4b" />
+          <circle cx="40" cy="43" r="2.5" fill="#ffffff" />
+          <circle cx="64" cy="43" r="2.5" fill="#ffffff" />
+          <polygon points="46,52 54,52 50,62" fill="#ff9600" />
+          <ellipse cx="38" cy="92" rx="8" ry="4" fill="#ff9600" />
+          <ellipse cx="62" cy="92" rx="8" ry="4" fill="#ff9600" />
+        </svg>
+
+        <div class="speech-bubble" id="mascotBubble">
+          Inspect the flag details and pick the correct match!
+        </div>
+      </div>
+
+      <!-- BIG REAL FLAG STAGE -->
+      <div class="flag-stage">
+        <img id="flagImage" class="real-flag-img" src="" alt="National Flag" />
+      </div>
+
+      <!-- Multiple Choice Options -->
+      <div class="options-grid" id="optionsContainer"></div>
+    </main>
+
+    <!-- Educational Bottom Drawer -->
+    <footer class="bottom-sheet" id="bottomSheet">
+      <div class="fact-dossier" id="factDossier">
+        <div class="dossier-headline" id="feedbackTitle">
+          <span>Correct! 🎉</span>
+        </div>
+        
+        <div class="fact-cards-row">
+          <div class="fact-chip">
+            <span class="label">🏛️ Capital City</span>
+            <span id="factCapital">Kathmandu</span>
+          </div>
+          <div class="fact-chip">
+            <span class="label">📍 Continent & Flag</span>
+            <span id="factRegion">Asia 🇳🇵</span>
+          </div>
+        </div>
+
+        <div class="fact-banner-full">
+          <strong style="color: #333;">🌟 Famous For:</strong> <span id="factFamous">Mount Everest & Himalayas</span>
+        </div>
+
+        <div class="fact-banner-full" style="font-size: 12px; background: rgba(255,255,255,0.7);">
+          <strong style="color: #333;">💡 Fact:</strong> <span id="factDidYouKnow">Only non-quadrilateral flag in the world!</span>
+        </div>
+      </div>
+
+      <button class="duo-btn disabled" id="actionBtn" onclick="game.handleActionClick()">CHECK</button>
+    </footer>
+
+    <!-- Lesson Completed Overlay -->
+    <div class="screen-overlay" id="victoryOverlay">
+      <div style="font-size: 64px;">👑</div>
+      <h1 style="font-size: 28px; font-weight: 900; color: var(--duo-gold); margin-top: 10px;">World Flag Master!</h1>
+      <p style="color: #666; font-weight: 700; margin: 8px 0 24px;">You mastered all the flags, their capital cities, and famous wonders!</p>
+      <button class="duo-btn primary" style="max-width: 280px;" onclick="game.restartLesson()">PLAY AGAIN</button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="screen-overlay" id="gameOverOverlay">
+      <div style="font-size: 64px;">💔</div>
+      <h1 style="font-size: 26px; font-weight: 900; color: var(--duo-red);">Out of Hearts!</h1>
+      <p style="color: #777; font-weight: 700; margin: 8px 0 24px;">Review your flags and try again.</p>
+      <button class="duo-btn primary" style="max-width: 280px;" onclick="game.restartLesson()">RESTORE & PLAY</button>
+    </div>
+  </div>
+
+  <script>
+    /* 1. AUDIO SYNTHESIS */
+    class AudioSynth {
+      constructor() { this.ctx = null; }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      }
+      playClick() {
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.06);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.06);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.06);
+      }
+      playSuccess() {
+        this.init();
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.07);
+          gain.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.07 + 0.35);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.07);
+          osc.stop(this.ctx.currentTime + i * 0.07 + 0.35);
+        });
+      }
+      playError() {
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(170, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(110, this.ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.25);
+      }
+      playVictory() {
+        this.init();
+        [523, 659, 783, 1046, 1318].forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.08);
+          osc.stop(this.ctx.currentTime + 1.2);
+        });
+      }
+    }
+    const sound = new AudioSynth();
+
+    /* 2. REAL FLAGS DATABASE */
+    const COUNTRIES_DB = [
+      {
+        country: "Nepal",
+        code: "np",
+        capital: "Kathmandu",
+        flagEmoji: "🇳🇵",
+        continent: "Asia",
+        famousFor: "Mount Everest (Sagarmatha) & Birthplace of Buddha",
+        didYouKnow: "It has the world's only non-quadrilateral (double-pennon) national flag!",
+        distractorCountries: ["Bhutan", "Mongolia", "Myanmar"],
+        distractorCapitals: ["Thimphu", "Ulaanbaatar", "Naypyidaw"],
+        distractorFamous: ["Tiger's Nest Monastery", "Gobi Desert & Nomads", "Bagan Golden Pagodas"]
+      },
+      {
+        country: "Japan",
+        code: "jp",
+        capital: "Tokyo",
+        flagEmoji: "🇯🇵",
+        continent: "Asia",
+        famousFor: "Mount Fuji, Anime, Bullet Trains & Cherry Blossoms",
+        didYouKnow: "The red circle (Hinomaru) symbolizes the sun goddess Amaterasu!",
+        distractorCountries: ["South Korea", "Palau", "Bangladesh"],
+        distractorCapitals: ["Kyoto", "Seoul", "Osaka"],
+        distractorFamous: ["K-Pop & Kimchi", "Angkor Wat Temples", "Great Wall of China"]
+      },
+      {
+        country: "Italy",
+        code: "it",
+        capital: "Rome",
+        flagEmoji: "🇮🇹",
+        continent: "Europe",
+        famousFor: "The Colosseum, Pizza, Pasta & the Renaissance",
+        didYouKnow: "Contains two entire sovereign countries within its borders: San Marino and Vatican City!",
+        distractorCountries: ["Ireland", "Mexico", "Hungary"],
+        distractorCapitals: ["Milan", "Madrid", "Athens"],
+        distractorFamous: ["Parthenon & Acropolis", "Flamenco & Bullfights", "Castles of Transylvania"]
+      },
+      {
+        country: "Egypt",
+        code: "eg",
+        capital: "Cairo",
+        flagEmoji: "🇪🇬",
+        continent: "Africa",
+        famousFor: "The Great Pyramids of Giza, Sphinx & The Nile River",
+        didYouKnow: "The golden Eagle of Saladin sits prominently at the center of its tricolor!",
+        distractorCountries: ["Syria", "Iraq", "Yemen"],
+        distractorCapitals: ["Alexandria", "Khartoum", "Damascus"],
+        distractorFamous: ["Petra Rock City", "Sahara Sand Dunes", "Victoria Falls"]
+      },
+      {
+        country: "Brazil",
+        code: "br",
+        capital: "Brasília",
+        flagEmoji: "🇧🇷",
+        continent: "South America",
+        famousFor: "Amazon Rainforest, Samba Carnival & Christ the Redeemer",
+        didYouKnow: "The stars on its flag depict the constellation sky over Rio on November 15, 1889!",
+        distractorCountries: ["Argentina", "Colombia", "Portugal"],
+        distractorCapitals: ["Rio de Janeiro", "São Paulo", "Buenos Aires"],
+        distractorFamous: ["Machu Picchu Incan Ruins", "Galapagos Giant Tortoises", "Tango Dance & Gauchos"]
+      },
+      {
+        country: "Australia",
+        code: "au",
+        capital: "Canberra",
+        flagEmoji: "🇦🇺",
+        continent: "Oceania",
+        famousFor: "Sydney Opera House, Great Barrier Reef & Kangaroos",
+        didYouKnow: "Canberra was chosen as capital as a compromise between rivals Sydney and Melbourne!",
+        distractorCountries: ["New Zealand", "United Kingdom", "Fiji"],
+        distractorCapitals: ["Sydney", "Melbourne", "Brisbane"],
+        distractorFamous: ["Mount Cook & Fiords", "Moai Statues of Easter Island", "Uluru & Outback"]
+      },
+      {
+        country: "Canada",
+        code: "ca",
+        capital: "Ottawa",
+        flagEmoji: "🇨🇦",
+        continent: "North America",
+        famousFor: "Niagara Falls, Maple Syrup, Ice Hockey & Rocky Mountains",
+        didYouKnow: "Canada has more lakes than all other countries in the world combined!",
+        distractorCountries: ["Denmark", "Norway", "Switzerland"],
+        distractorCapitals: ["Toronto", "Vancouver", "Montreal"],
+        distractorFamous: ["Grand Canyon", "Geysers & Blue Lagoon", "Northern Lights & Fjords"]
+      },
+      {
+        country: "France",
+        code: "fr",
+        capital: "Paris",
+        flagEmoji: "🇫🇷",
+        continent: "Europe",
+        famousFor: "Eiffel Tower, Louvre Museum, Croissants & Haute Couture",
+        didYouKnow: "Nicknamed 'L'Hexagone' because of its 6-sided national geographic perimeter!",
+        distractorCountries: ["Netherlands", "Russia", "Belgium"],
+        distractorCapitals: ["Lyon", "Marseille", "Brussels"],
+        distractorFamous: ["Neuschwanstein Castle", "Colosseum", "Big Ben & Westminster"]
+      }
+    ];
+
+    function shuffleArray(items) {
+      const shuffled = [...items];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    /* 3. GAME STATE CONTROLLER */
+    class FlagGameController {
+      constructor() {
+        this.mode = 'flag'; // 'flag' | 'capitals' | 'famous' | 'blitz'
+        this.questionOrder = shuffleArray(COUNTRIES_DB);
+        this.currentIndex = 0;
+        this.hearts = 5;
+        this.streak = 4;
+        this.selectedChoice = null;
+        this.isEvaluated = false;
+
+        this.timerInterval = null;
+        this.timeLeft = 10;
+
+        // UI references
+        this.splashScreen = document.getElementById("splashScreen");
+        this.progressBar = document.getElementById("progressBar");
+        this.heartCount = document.getElementById("heartCount");
+        this.streakCount = document.getElementById("streakCount");
+        this.questionTitle = document.getElementById("questionTitle");
+        this.mascotBubble = document.getElementById("mascotBubble");
+        this.flagImage = document.getElementById("flagImage");
+        this.optionsContainer = document.getElementById("optionsContainer");
+        this.timerTrack = document.getElementById("timerTrack");
+        this.timerFill = document.getElementById("timerFill");
+
+        this.bottomSheet = document.getElementById("bottomSheet");
+        this.factDossier = document.getElementById("factDossier");
+        this.actionBtn = document.getElementById("actionBtn");
+
+        this.feedbackTitle = document.getElementById("feedbackTitle");
+        this.factCapital = document.getElementById("factCapital");
+        this.factRegion = document.getElementById("factRegion");
+        this.factFamous = document.getElementById("factFamous");
+        this.factDidYouKnow = document.getElementById("factDidYouKnow");
+
+        this.victoryOverlay = document.getElementById("victoryOverlay");
+        this.gameOverOverlay = document.getElementById("gameOverOverlay");
+      }
+
+      startFromSplash() {
+        sound.playSuccess();
+        this.splashScreen.classList.add("hidden");
+        this.loadQuestion();
+      }
+
+      switchMode(newMode) {
+        this.mode = newMode;
+        document.querySelectorAll(".mode-pill").forEach(p => p.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+        this.restartLesson();
+      }
+
+      loadQuestion() {
+        this.selectedChoice = null;
+        this.isEvaluated = false;
+        clearInterval(this.timerInterval);
+
+        const item = this.questionOrder[this.currentIndex];
+        this.progressBar.style.width = `${(this.currentIndex / this.questionOrder.length) * 100}%`;
+
+        // Large FlagCDN URL (w640 for crisp high-resolution quality)
+        this.flagImage.src = `https://flagcdn.com/w640/${item.code}.png`;
+
+        let promptText = "";
+        let correctAnswer = "";
+        let optionsList = [];
+
+        if (this.mode === 'flag' || this.mode === 'blitz') {
+          this.questionTitle.innerText = "Which country's flag is this?";
+          promptText = "Inspect the colors, crests, and shape of this flag!";
+          correctAnswer = item.country;
+          optionsList = [item.country, ...item.distractorCountries];
+        } else if (this.mode === 'capitals') {
+          this.questionTitle.innerText = `What is the capital of ${item.country}?`;
+          promptText = `Look at the flag of ${item.country}. Can you name its capital city?`;
+          correctAnswer = item.capital;
+          optionsList = [item.capital, ...item.distractorCapitals];
+        } else if (this.mode === 'famous') {
+          this.questionTitle.innerText = `What is ${item.country} famous for?`;
+          promptText = `What landmark or treasure is this country celebrated for?`;
+          correctAnswer = item.famousFor;
+          optionsList = [item.famousFor, ...item.distractorFamous];
+        }
+
+        this.currentCorrectAnswer = correctAnswer;
+        this.mascotBubble.innerText = promptText;
+
+        // Reset bottom drawer
+        this.bottomSheet.className = "bottom-sheet";
+        this.factDossier.classList.remove("show");
+        this.actionBtn.innerText = "CHECK";
+        this.actionBtn.className = "duo-btn disabled";
+
+        // Shuffle options
+        const shuffled = shuffleArray(optionsList);
+        this.optionsContainer.innerHTML = "";
+
+        shuffled.forEach((text, i) => {
+          const btn = document.createElement("button");
+          btn.className = "duo-choice-card";
+          btn.innerHTML = `
+            <span>${text}</span>
+            <span class="choice-key">${i + 1}</span>
+          `;
+          btn.onclick = () => this.selectOption(btn, text);
+          this.optionsContainer.appendChild(btn);
+        });
+
+        // Blitz Mode Timer Handling
+        if (this.mode === 'blitz') {
+          this.timerTrack.style.display = "block";
+          this.timeLeft = 10;
+          this.timerFill.style.width = "100%";
+          this.timerInterval = setInterval(() => {
+            this.timeLeft--;
+            this.timerFill.style.width = `${(this.timeLeft / 10) * 100}%`;
+            if (this.timeLeft <= 0) {
+              clearInterval(this.timerInterval);
+              this.timeOut();
+            }
+          }, 1000);
+        } else {
+          this.timerTrack.style.display = "none";
+        }
+      }
+
+      selectOption(buttonEl, text) {
+        if (this.isEvaluated) return;
+        sound.playClick();
+
+        document.querySelectorAll(".duo-choice-card").forEach(el => el.classList.remove("selected"));
+        buttonEl.classList.add("selected");
+
+        this.selectedChoice = text;
+        this.actionBtn.className = "duo-btn primary";
+      }
+
+      handleActionClick() {
+        if (!this.selectedChoice) return;
+
+        if (!this.isEvaluated) {
+          this.checkAnswer();
+        } else {
+          this.nextQuestion();
+        }
+      }
+
+      timeOut() {
+        if (this.isEvaluated) return;
+        this.selectedChoice = "TIME_EXPIRED";
+        this.checkAnswer();
+      }
+
+      checkAnswer() {
+        this.isEvaluated = true;
+        clearInterval(this.timerInterval);
+
+        const item = this.questionOrder[this.currentIndex];
+        const isCorrect = this.selectedChoice === this.currentCorrectAnswer;
+
+        // Populate learning facts
+        this.factCapital.innerText = item.capital;
+        this.factRegion.innerText = `${item.continent} ${item.flagEmoji}`;
+        this.factFamous.innerText = item.famousFor;
+        this.factDidYouKnow.innerText = item.didYouKnow;
+
+        if (isCorrect) {
+          sound.playSuccess();
+          this.bottomSheet.classList.add("correct");
+          this.feedbackTitle.innerHTML = `<span>Awesome! That's ${item.country} ${item.flagEmoji}</span>`;
+          this.mascotBubble.innerText = "Spot on! Look at what this nation is famous for!";
+        } else {
+          sound.playError();
+          this.hearts--;
+          this.heartCount.innerText = this.hearts;
+          this.bottomSheet.classList.add("wrong");
+          this.feedbackTitle.innerHTML = `<span>Correct answer: ${this.currentCorrectAnswer}</span>`;
+          this.mascotBubble.innerText = "Don't sweat it! Review the facts below to memorize it!";
+
+          const app = document.querySelector(".app-viewport");
+          app.classList.add("shake-anim");
+          setTimeout(() => app.classList.remove("shake-anim"), 400);
+
+          if (this.hearts <= 0) {
+            this.gameOverOverlay.classList.add("active");
+            return;
+          }
+        }
+
+        this.factDossier.classList.add("show");
+        document.querySelectorAll(".duo-choice-card").forEach(c => c.classList.add("disabled"));
+        this.actionBtn.innerText = "CONTINUE";
+      }
+
+      nextQuestion() {
+        this.currentIndex++;
+        if (this.currentIndex >= this.questionOrder.length) {
+          sound.playVictory();
+          startConfetti();
+          this.progressBar.style.width = "100%";
+          this.victoryOverlay.classList.add("active");
+        } else {
+          this.loadQuestion();
+        }
+      }
+
+      restartLesson() {
+        clearInterval(this.timerInterval);
+        this.hearts = 5;
+        this.heartCount.innerText = "5";
+        this.questionOrder = shuffleArray(COUNTRIES_DB);
+        this.currentIndex = 0;
+        this.victoryOverlay.classList.remove("active");
+        this.gameOverOverlay.classList.remove("active");
+        this.loadQuestion();
+      }
+    }
+
+    /* 4. CONFETTI EFFECT */
+    function startConfetti() {
+      const canvas = document.getElementById("confettiCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ["#58cc02", "#1cb0f6", "#ff4b4b", "#ffc800", "#ce82ff"];
+
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          alpha: 1
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.rot += p.rotSpeed;
+          p.alpha -= 0.01;
+
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.3);
+            ctx.restore();
+          }
+        });
+        if (alive) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      render();
+    }
+
+    // Keyboard support: 1-4 to pick, Enter to check
+    window.addEventListener("keydown", (e) => {
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        const cards = document.querySelectorAll(".duo-choice-card");
+        const idx = parseInt(e.key) - 1;
+        if (cards[idx]) cards[idx].click();
+      } else if (e.key === "Enter") {
+        document.getElementById("actionBtn").click();
+      }
+    });
+
+    const game = new FlagGameController();
+  </script>
+</body>
+</html>
