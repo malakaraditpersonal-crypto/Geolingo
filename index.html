@@ -24,6 +24,12 @@
       --text-muted: #888888;
     }
 
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -39,6 +45,8 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
       color: var(--text-dark);
     }
 
@@ -46,7 +54,8 @@
     .app-viewport {
       width: 100%;
       max-width: 560px;
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
       background: #ffffff;
       display: flex;
       flex-direction: column;
@@ -57,8 +66,8 @@
 
     @media (min-width: 600px) {
       .app-viewport {
-        min-height: 94vh;
         height: 94vh;
+        height: 94dvh;
         border-radius: 28px;
         border: 3px solid #e2e8f0;
       }
@@ -145,11 +154,32 @@
     /* Mode Navigation Tabs */
     .mode-bar {
       display: flex;
+      position: relative;
       background: #f8fafc;
-      padding: 6px;
+      padding: 42px 6px 6px;
       gap: 6px;
       border-bottom: 2px solid #edf2f7;
     }
+
+    .theme-toggle {
+      position: absolute;
+      top: 6px;
+      left: 10px;
+      z-index: 501;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--text-dark);
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover { background: #f1f5f9; }
 
     .mode-pill {
       flex: 1;
@@ -174,7 +204,7 @@
 
     /* Top Stats Bar */
     .header-bar {
-      padding: 10px 18px 8px;
+      padding: 7px 14px 5px;
       display: flex;
       align-items: center;
       gap: 14px;
@@ -211,30 +241,33 @@
     /* Main Lesson Body */
     .lesson-content {
       flex: 1;
-      padding: 12px 20px 145px;
-      overflow-y: auto;
+      min-height: 0;
+      padding: 8px 18px 10px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
     .question-title {
-      font-size: 22px;
+      flex-shrink: 0;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: -0.5px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     /* Mascot Header Prompt */
     .mascot-row {
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .mascot-avatar {
-      width: 52px;
-      height: 52px;
+      width: 44px;
+      height: 44px;
       flex-shrink: 0;
       animation: gentle-bob 2.8s ease-in-out infinite;
     }
@@ -249,8 +282,8 @@
       background: #ffffff;
       border: 2px solid var(--card-border);
       border-radius: 14px;
-      padding: 8px 12px;
-      font-size: 13.5px;
+      padding: 6px 10px;
+      font-size: 12.5px;
       font-weight: 700;
       color: #555;
       box-shadow: 0 3px 0 #ededed;
@@ -274,7 +307,8 @@
        ======================================================= */
     .flag-stage {
       width: 100%;
-      height: 250px; /* Big stage */
+      flex: 1 1 0;
+      min-height: 0;
       background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
       border: 3px solid #e2e8f0;
       border-radius: 22px;
@@ -282,9 +316,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
-      padding: 12px;
+      padding: 8px;
     }
 
     /* Large Flag Image Styling */
@@ -292,7 +326,7 @@
       width: auto;
       max-width: 95%;
       height: auto;
-      max-height: 220px; /* Much larger display */
+      max-height: 100%;
       border-radius: 12px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18), 0 3px 8px rgba(0,0,0,0.12);
       border: 2px solid rgba(255, 255, 255, 0.8);
@@ -308,12 +342,13 @@
     /* Blitz Timer Bar */
     .timer-track {
       width: 100%;
-      height: 6px;
+      height: 18px;
       background: #e2e8f0;
-      border-radius: 6px;
+      border-radius: 9px;
       margin-bottom: 10px;
       overflow: hidden;
       display: none;
+      position: relative;
     }
     .timer-fill {
       height: 100%;
@@ -321,12 +356,26 @@
       background: var(--duo-orange);
       transition: width 1s linear;
     }
+    .timer-fill.urgent { background: var(--duo-red); }
+    .timer-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.75);
+    }
 
     /* Option Cards */
     .options-grid {
       display: grid;
+      flex-shrink: 0;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     .duo-choice-card {
@@ -334,7 +383,7 @@
       border: 2px solid var(--card-border);
       border-bottom: 5px solid var(--card-border);
       border-radius: 16px;
-      padding: 12px 14px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -344,7 +393,7 @@
       color: var(--text-dark);
       transition: all 0.1s ease;
       outline: none;
-      min-height: 52px;
+      min-height: 44px;
     }
 
     .duo-choice-card:hover:not(.disabled) {
@@ -375,11 +424,8 @@
 
     /* Slide-up Learning Sheet (Duolingo Style) */
     .bottom-sheet {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 14px 20px;
+      flex-shrink: 0;
+      padding: 9px 18px;
       border-top: 2px solid #e5e5e5;
       background: #ffffff;
       transition: background 0.25s;
@@ -459,7 +505,7 @@
       cursor: pointer;
       border: none;
       border-radius: 16px;
-      padding: 14px 20px;
+      padding: 10px 16px;
       font-size: 16px;
       font-weight: 900;
       text-transform: uppercase;
@@ -526,11 +572,585 @@
       20%, 60% { transform: translateX(-8px); }
       40%, 80% { transform: translateX(8px); }
     }
+
+    body.dark-mode {
+      background-color: #0f172a;
+      --card-border: #334155;
+      --text-dark: #e2e8f0;
+      --text-muted: #94a3b8;
+    }
+
+    body.dark-mode .app-viewport,
+    body.dark-mode .header-bar,
+    body.dark-mode .bottom-sheet,
+    body.dark-mode .splash-screen {
+      background: #111827;
+    }
+
+    body.dark-mode .mode-bar {
+      background: #0f172a;
+      border-color: #1e293b;
+    }
+
+    body.dark-mode .mode-pill.active,
+    body.dark-mode .theme-toggle,
+    body.dark-mode .duo-choice-card,
+    body.dark-mode .speech-bubble {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .mode-pill { color: #cbd5e1; }
+    body.dark-mode .mode-pill.active { color: #7dd3fc; }
+
+    body.dark-mode .theme-toggle:hover,
+    body.dark-mode .duo-choice-card:hover:not(.disabled) {
+      background: #263449;
+    }
+
+    body.dark-mode .duo-choice-card.selected {
+      background: #0c4a6e;
+      border-color: #38bdf8;
+      border-bottom-color: #0284c7;
+      color: #e0f2fe;
+    }
+
+    body.dark-mode .speech-bubble::before {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    body.dark-mode .flag-stage {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-color: #334155;
+    }
+
+    body.dark-mode .progress-container,
+    body.dark-mode .timer-track {
+      background: #334155;
+    }
+
+    body.dark-mode .choice-key,
+    body.dark-mode .feature-tag {
+      border-color: #475569;
+      color: #cbd5e1;
+    }
+
+    body.dark-mode .feature-tag {
+      background: #1e293b;
+    }
+
+    body.dark-mode .splash-subtitle,
+    body.dark-mode .speech-bubble,
+    body.dark-mode .fact-chip span.label {
+      color: #cbd5e1;
+    }
+
+    body.dark-mode .fact-chip,
+    body.dark-mode .fact-banner-full {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-color: #334155;
+    }
+
+    body.dark-mode .fact-banner-full strong {
+      color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .bottom-sheet.correct {
+      background: #14351f;
+      border-color: #27613a;
+    }
+
+    body.dark-mode .bottom-sheet.wrong {
+      background: #401f27;
+      border-color: #7f3442;
+    }
+
+    body.dark-mode .bottom-sheet.correct .dossier-headline { color: #86efac; }
+    body.dark-mode .bottom-sheet.wrong .dossier-headline { color: #fda4af; }
+
+    body.dark-mode .fact-banner-full[style] {
+      background: #1e293b !important;
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .screen-overlay {
+      background: rgba(15, 23, 42, 0.98);
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .screen-overlay p {
+      color: #cbd5e1 !important;
+    }
+
+    body.dark-mode .duo-btn.disabled {
+      background: #334155;
+      color: #cbd5e1;
+      border-bottom-color: #1e293b;
+    }
+
+    @media (max-height: 650px) {
+      .mode-bar { padding-top: 36px; }
+      .mode-pill { padding: 5px 3px; font-size: 11px; }
+      .header-bar { padding-top: 4px; padding-bottom: 3px; }
+      .lesson-content { padding-top: 5px; padding-bottom: 6px; }
+      .question-title { font-size: 18px; }
+      .mascot-row { margin-bottom: 5px; }
+      .mascot-avatar { width: 36px; height: 36px; }
+      .flag-stage { min-height: 0; margin-bottom: 6px; }
+      .duo-choice-card { min-height: 38px; padding: 5px 8px; font-size: 13px; }
+      .bottom-sheet { padding: 5px 10px; }
+      .fact-dossier { gap: 3px; margin-bottom: 4px; }
+      .dossier-headline { font-size: 15px; }
+      .fact-cards-row { gap: 4px; }
+      .fact-chip { padding: 3px 6px; font-size: 11px; }
+      .fact-chip span.label { font-size: 9px; }
+      .fact-banner-full { padding: 4px 7px; font-size: 10px; line-height: 1.2; }
+      .duo-btn { padding: 8px 12px; font-size: 14px; }
+      .splash-screen { padding: 38px 20px 16px; }
+      .splash-owl { width: 100px; height: 100px; margin-bottom: 12px; }
+      .splash-title { font-size: 28px; }
+      .splash-subtitle { font-size: 14px; margin-bottom: 12px; }
+      .feature-tags { gap: 6px; }
+      .feature-tag { padding: 4px 8px; font-size: 11px; }
+    }
+
+    /* Duolingo color, iOS glass, and soft layered surfaces */
+    body {
+      background:
+        radial-gradient(ellipse at 12% 12%, rgba(88, 204, 2, 0.15), transparent 34%),
+        radial-gradient(ellipse at 88% 86%, rgba(28, 176, 246, 0.16), transparent 36%),
+        linear-gradient(145deg, #eff8ff, #f5f7fb 52%, #eef8e8);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .app-viewport {
+      max-width: 640px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow:
+        0 28px 80px rgba(38, 64, 92, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(28px) saturate(1.35);
+      -webkit-backdrop-filter: blur(28px) saturate(1.35);
+    }
+
+    .mode-bar {
+      gap: 8px;
+      padding: 44px 12px 10px;
+      background: rgba(248, 250, 252, 0.58);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    }
+
+    .theme-toggle {
+      top: 7px;
+      left: 12px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 3px 12px rgba(31, 41, 55, 0.08), inset 0 1px rgba(255,255,255,.9);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .theme-toggle:active,
+    .mode-pill:active { transform: scale(0.97); }
+
+    .mode-pill {
+      min-height: 40px;
+      border-radius: 15px;
+      color: #64748b;
+      transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mode-pill.active {
+      background: rgba(255, 255, 255, 0.78);
+      border-color: rgba(255, 255, 255, 0.9);
+      color: #1687c4;
+      box-shadow: 0 5px 14px rgba(43, 73, 101, 0.1), inset 0 1px 0 #fff;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .header-bar {
+      padding: 8px 18px 5px;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .progress-container {
+      height: 12px;
+      padding: 2px;
+      background: rgba(148, 163, 184, 0.2);
+      box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .progress-bar {
+      box-shadow: 0 0 12px rgba(88, 204, 2, 0.35);
+    }
+
+    .stats-tray {
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .stat-badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .lesson-content {
+      padding: 8px 18px 10px;
+    }
+
+    .question-title {
+      color: #243247;
+      font-size: clamp(19px, 3.5vw, 23px);
+      letter-spacing: -0.65px;
+    }
+
+    .mascot-row { gap: 10px; }
+
+    .mascot-avatar {
+      filter: drop-shadow(0 5px 7px rgba(40, 80, 32, 0.16));
+    }
+
+    .speech-bubble {
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.68);
+      color: #4b5b70;
+      box-shadow: 0 5px 16px rgba(38, 64, 92, 0.07), inset 0 1px 0 #fff;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .speech-bubble::before {
+      background: rgba(255, 255, 255, 0.78);
+      border-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .flag-stage {
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 26px;
+      background:
+        radial-gradient(ellipse at 50% 5%, rgba(255, 255, 255, 0.88), transparent 70%),
+        linear-gradient(145deg, rgba(224, 242, 254, 0.48), rgba(241, 245, 249, 0.66));
+      box-shadow:
+        0 12px 30px rgba(66, 93, 122, 0.09),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    }
+
+    .real-flag-img {
+      border-radius: 15px;
+      box-shadow: 0 14px 34px rgba(25, 42, 60, 0.22), 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .duo-choice-card {
+      min-height: 48px;
+      padding: 9px 13px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-bottom: 4px solid rgba(148, 163, 184, 0.3);
+      border-radius: 17px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 4px 12px rgba(38, 64, 92, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .duo-choice-card:hover:not(.disabled) {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(28, 176, 246, 0.35);
+      box-shadow: 0 7px 18px rgba(38, 64, 92, 0.1);
+    }
+
+    .duo-choice-card.selected {
+      background: #e0f5ff;
+      border-color: #54c3f5;
+      border-bottom-color: #1595ce;
+      color: #0879ae;
+      box-shadow: 0 5px 16px rgba(28, 176, 246, 0.16), inset 0 1px 0 #fff;
+    }
+
+    .choice-key {
+      flex: 0 0 22px;
+      border-color: rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .bottom-sheet {
+      padding: 10px 18px max(10px, env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: 0 -12px 32px rgba(38, 64, 92, 0.07);
+      backdrop-filter: blur(26px) saturate(1.45);
+      -webkit-backdrop-filter: blur(26px) saturate(1.45);
+    }
+
+    .bottom-sheet.correct {
+      background: rgba(218, 255, 190, 0.82);
+      border-color: rgba(140, 209, 91, 0.55);
+    }
+
+    .bottom-sheet.wrong {
+      background: rgba(255, 224, 226, 0.84);
+      border-color: rgba(238, 117, 126, 0.5);
+    }
+
+    .fact-dossier { gap: 7px; }
+
+    .dossier-headline {
+      font-size: clamp(16px, 3vw, 19px);
+      letter-spacing: -0.3px;
+    }
+
+    .fact-chip,
+    .fact-banner-full {
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 3px 10px rgba(38, 64, 92, 0.05), inset 0 1px 0 rgba(255,255,255,.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .fact-chip { padding: 7px 10px; }
+
+    .fact-banner-full { padding: 7px 11px; }
+
+    .duo-btn {
+      min-height: 46px;
+      border-radius: 17px;
+      box-shadow: 0 5px 12px rgba(31, 41, 55, 0.08), inset 0 1px 0 rgba(255,255,255,.2);
+      transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .duo-btn.primary {
+      background: linear-gradient(180deg, #69dc10, #58cc02);
+      border-bottom-width: 4px;
+      border-bottom-color: #429900;
+      box-shadow: 0 6px 14px rgba(88, 204, 2, 0.2), inset 0 1px 0 rgba(255,255,255,.34);
+    }
+
+    .duo-btn.primary:hover {
+      filter: brightness(1.04);
+      box-shadow: 0 8px 18px rgba(88, 204, 2, 0.24), inset 0 1px 0 rgba(255,255,255,.4);
+    }
+
+    .duo-btn.disabled {
+      background: rgba(226, 232, 240, 0.8);
+      border-bottom-color: rgba(148, 163, 184, 0.45);
+      color: #94a3b8;
+      box-shadow: none;
+    }
+
+    .splash-screen {
+      background:
+        radial-gradient(ellipse at 50% 26%, rgba(211, 255, 184, 0.48), transparent 43%),
+        rgba(255, 255, 255, 0.91);
+      backdrop-filter: blur(30px) saturate(1.35);
+      -webkit-backdrop-filter: blur(30px) saturate(1.35);
+    }
+
+    .splash-owl { filter: drop-shadow(0 16px 18px rgba(57, 131, 13, 0.16)); }
+
+    .splash-title {
+      color: #55b80a;
+      font-size: clamp(32px, 7vw, 40px);
+      letter-spacing: -1.1px;
+    }
+
+    .feature-tag {
+      border-color: rgba(255, 255, 255, 0.88);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 4px 12px rgba(38, 64, 92, 0.06), inset 0 1px 0 #fff;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .screen-overlay {
+      background: rgba(248, 250, 252, 0.9);
+      backdrop-filter: blur(28px) saturate(1.35);
+      -webkit-backdrop-filter: blur(28px) saturate(1.35);
+    }
+
+    body.dark-mode {
+      background:
+        radial-gradient(ellipse at 12% 12%, rgba(88, 204, 2, 0.12), transparent 34%),
+        radial-gradient(ellipse at 88% 86%, rgba(28, 176, 246, 0.13), transparent 36%),
+        linear-gradient(145deg, #07111f, #101827 52%, #0c1c17);
+    }
+
+    body.dark-mode .app-viewport {
+      background: rgba(15, 23, 42, 0.77);
+      border-color: rgba(148, 163, 184, 0.18);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    body.dark-mode .mode-bar,
+    body.dark-mode .header-bar {
+      background: rgba(15, 23, 42, 0.58);
+      border-color: rgba(148, 163, 184, 0.14);
+    }
+
+    body.dark-mode .mode-pill { color: #b6c5d8; }
+
+    body.dark-mode .mode-pill.active,
+    body.dark-mode .theme-toggle {
+      background: rgba(51, 65, 85, 0.72);
+      border-color: rgba(203, 213, 225, 0.2);
+      color: #b9e8ff;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    body.dark-mode .stat-badge {
+      background: rgba(30, 41, 59, 0.72);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    body.dark-mode .question-title { color: #f1f5f9; }
+
+    body.dark-mode .speech-bubble,
+    body.dark-mode .speech-bubble::before {
+      background: rgba(30, 41, 59, 0.78);
+      border-color: rgba(203, 213, 225, 0.16);
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .flag-stage {
+      background:
+        radial-gradient(ellipse at 50% 5%, rgba(71, 85, 105, 0.38), transparent 70%),
+        linear-gradient(145deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.72));
+      border-color: rgba(203, 213, 225, 0.16);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    body.dark-mode .duo-choice-card {
+      background: rgba(30, 41, 59, 0.78);
+      border-color: rgba(203, 213, 225, 0.17);
+      border-bottom-color: rgba(148, 163, 184, 0.34);
+      color: #f1f5f9;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255,255,255,.07);
+    }
+
+    body.dark-mode .duo-choice-card:hover:not(.disabled) {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: rgba(125, 211, 252, 0.45);
+    }
+
+    body.dark-mode .duo-choice-card.selected {
+      background: rgba(12, 74, 110, 0.92);
+      border-color: #38bdf8;
+      border-bottom-color: #0284c7;
+      color: #e0f2fe;
+      box-shadow: 0 5px 16px rgba(14, 165, 233, 0.18), inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    body.dark-mode .choice-key {
+      background: rgba(15, 23, 42, 0.48);
+      border-color: rgba(203, 213, 225, 0.28);
+      color: #cbd5e1;
+    }
+
+    body.dark-mode .bottom-sheet {
+      background: rgba(15, 23, 42, 0.82);
+      border-color: rgba(203, 213, 225, 0.14);
+      box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.16);
+    }
+
+    body.dark-mode .bottom-sheet.correct {
+      background: rgba(20, 53, 31, 0.88);
+      border-color: rgba(74, 145, 91, 0.5);
+    }
+
+    body.dark-mode .bottom-sheet.wrong {
+      background: rgba(64, 31, 39, 0.9);
+      border-color: rgba(179, 76, 94, 0.5);
+    }
+
+    body.dark-mode .fact-chip,
+    body.dark-mode .fact-banner-full,
+    body.dark-mode .fact-banner-full[style] {
+      background: rgba(30, 41, 59, 0.78) !important;
+      border-color: rgba(203, 213, 225, 0.14);
+      color: #f1f5f9;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,255,.07);
+    }
+
+    body.dark-mode .fact-chip span.label { color: #cbd5e1; }
+    body.dark-mode .bottom-sheet.correct .dossier-headline { color: #a7f3c0; }
+    body.dark-mode .bottom-sheet.wrong .dossier-headline { color: #fecdd3; }
+    body.dark-mode .fact-banner-full strong { color: #f1f5f9 !important; }
+
+    body.dark-mode .duo-btn.disabled {
+      background: rgba(51, 65, 85, 0.82);
+      color: #dbe5f2;
+      border-bottom-color: rgba(15, 23, 42, 0.72);
+    }
+
+    body.dark-mode .splash-screen {
+      background:
+        radial-gradient(ellipse at 50% 26%, rgba(88, 204, 2, 0.16), transparent 43%),
+        rgba(15, 23, 42, 0.94);
+    }
+
+    body.dark-mode .splash-title { color: #8ce34a; }
+
+    body.dark-mode .feature-tag {
+      background: rgba(30, 41, 59, 0.72);
+      border-color: rgba(203, 213, 225, 0.15);
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .screen-overlay {
+      background: rgba(15, 23, 42, 0.9);
+      color: #f1f5f9;
+    }
+
+    @media (min-width: 600px) {
+      .app-viewport {
+        border-radius: 34px;
+        border-color: rgba(255, 255, 255, 0.76);
+      }
+    }
+
+    @media (max-width: 380px) {
+      .mode-bar { gap: 4px; padding-right: 7px; padding-left: 7px; }
+      .mode-pill { font-size: 10.5px; }
+      .lesson-content { padding-right: 12px; padding-left: 12px; }
+      .duo-choice-card { padding-right: 8px; padding-left: 8px; font-size: 13px; }
+      .bottom-sheet { padding-right: 12px; padding-left: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="app-viewport">
+    <button class="theme-toggle" id="themeToggle" onclick="game.toggleTheme()" aria-pressed="false">
+      <span id="themeIcon" aria-hidden="true">🌙</span>
+      <span id="themeLabel">Dark mode</span>
+    </button>
     <canvas id="confettiCanvas"></canvas>
 
     <!-- =======================================================
@@ -598,8 +1218,9 @@
 
     <!-- Main Game Area -->
     <main class="lesson-content">
-      <div class="timer-track" id="timerTrack">
+      <div class="timer-track" id="timerTrack" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="10" aria-valuenow="10">
         <div class="timer-fill" id="timerFill"></div>
+        <span class="timer-label" id="timerText">10s</span>
       </div>
 
       <h1 class="question-title" id="questionTitle">Which country's flag is this?</h1>
@@ -645,21 +1266,21 @@
         
         <div class="fact-cards-row">
           <div class="fact-chip">
-            <span class="label">🏛️ Capital City</span>
+            <span class="label" id="factCapitalLabel">🏛️ Capital City</span>
             <span id="factCapital">Kathmandu</span>
           </div>
           <div class="fact-chip">
-            <span class="label">📍 Continent & Flag</span>
+            <span class="label" id="factRegionLabel">📍 Continent & Flag</span>
             <span id="factRegion">Asia 🇳🇵</span>
           </div>
         </div>
 
         <div class="fact-banner-full">
-          <strong style="color: #333;">🌟 Famous For:</strong> <span id="factFamous">Mount Everest & Himalayas</span>
+          <strong id="factFamousLabel" style="color: #333;">🌟 Famous For:</strong> <span id="factFamous">Mount Everest & Himalayas</span>
         </div>
 
         <div class="fact-banner-full" style="font-size: 12px; background: rgba(255,255,255,0.7);">
-          <strong style="color: #333;">💡 Fact:</strong> <span id="factDidYouKnow">Only non-quadrilateral flag in the world!</span>
+          <strong id="factDidYouKnowLabel" style="color: #333;">💡 Fact:</strong> <span id="factDidYouKnow">Only non-quadrilateral flag in the world!</span>
         </div>
       </div>
 
@@ -846,6 +1467,210 @@
       }
     ];
 
+    const WORLD_COUNTRIES = `
+ad|Andorra
+ae|United Arab Emirates
+af|Afghanistan
+ag|Antigua and Barbuda
+al|Albania
+am|Armenia
+ao|Angola
+ar|Argentina
+at|Austria
+au|Australia
+az|Azerbaijan
+ba|Bosnia and Herzegovina
+bb|Barbados
+bd|Bangladesh
+be|Belgium
+bf|Burkina Faso
+bg|Bulgaria
+bh|Bahrain
+bi|Burundi
+bj|Benin
+bn|Brunei
+bo|Bolivia
+br|Brazil
+bs|Bahamas
+bt|Bhutan
+bw|Botswana
+by|Belarus
+bz|Belize
+ca|Canada
+cd|Democratic Republic of the Congo
+cf|Central African Republic
+cg|Republic of the Congo
+ch|Switzerland
+ci|Cote d'Ivoire
+cl|Chile
+cm|Cameroon
+cn|China
+co|Colombia
+cr|Costa Rica
+cu|Cuba
+cv|Cabo Verde
+cy|Cyprus
+cz|Czechia
+de|Germany
+dj|Djibouti
+dk|Denmark
+dm|Dominica
+do|Dominican Republic
+dz|Algeria
+ec|Ecuador
+ee|Estonia
+eg|Egypt
+er|Eritrea
+es|Spain
+et|Ethiopia
+fi|Finland
+fj|Fiji
+fm|Micronesia
+fr|France
+ga|Gabon
+gb|United Kingdom
+gd|Grenada
+ge|Georgia
+gh|Ghana
+gm|Gambia
+gn|Guinea
+gq|Equatorial Guinea
+gr|Greece
+gt|Guatemala
+gw|Guinea-Bissau
+gy|Guyana
+hn|Honduras
+hr|Croatia
+ht|Haiti
+hu|Hungary
+id|Indonesia
+ie|Ireland
+il|Israel
+in|India
+iq|Iraq
+ir|Iran
+is|Iceland
+it|Italy
+jm|Jamaica
+jo|Jordan
+jp|Japan
+ke|Kenya
+kg|Kyrgyzstan
+kh|Cambodia
+ki|Kiribati
+km|Comoros
+kn|Saint Kitts and Nevis
+kp|North Korea
+kr|South Korea
+kw|Kuwait
+kz|Kazakhstan
+la|Laos
+lb|Lebanon
+lc|Saint Lucia
+li|Liechtenstein
+lk|Sri Lanka
+lr|Liberia
+ls|Lesotho
+lt|Lithuania
+lu|Luxembourg
+lv|Latvia
+ly|Libya
+ma|Morocco
+mc|Monaco
+md|Moldova
+me|Montenegro
+mg|Madagascar
+mh|Marshall Islands
+mk|North Macedonia
+ml|Mali
+mm|Myanmar
+mn|Mongolia
+mr|Mauritania
+mt|Malta
+mu|Mauritius
+mv|Maldives
+mw|Malawi
+mx|Mexico
+my|Malaysia
+mz|Mozambique
+na|Namibia
+ne|Niger
+ng|Nigeria
+ni|Nicaragua
+nl|Netherlands
+no|Norway
+np|Nepal
+nr|Nauru
+nz|New Zealand
+om|Oman
+pa|Panama
+pe|Peru
+pg|Papua New Guinea
+ph|Philippines
+pk|Pakistan
+pl|Poland
+ps|Palestine
+pt|Portugal
+pw|Palau
+py|Paraguay
+qa|Qatar
+ro|Romania
+rs|Serbia
+ru|Russia
+rw|Rwanda
+sa|Saudi Arabia
+sb|Solomon Islands
+sc|Seychelles
+sd|Sudan
+se|Sweden
+sg|Singapore
+si|Slovenia
+sk|Slovakia
+sl|Sierra Leone
+sm|San Marino
+sn|Senegal
+so|Somalia
+sr|Suriname
+ss|South Sudan
+st|Sao Tome and Principe
+sv|El Salvador
+sy|Syria
+sz|Eswatini
+td|Chad
+tg|Togo
+th|Thailand
+tj|Tajikistan
+tl|Timor-Leste
+tm|Turkmenistan
+tn|Tunisia
+to|Tonga
+tr|Turkey
+tt|Trinidad and Tobago
+tv|Tuvalu
+tz|Tanzania
+ua|Ukraine
+ug|Uganda
+us|United States
+uy|Uruguay
+uz|Uzbekistan
+va|Vatican City
+vc|Saint Vincent and the Grenadines
+ve|Venezuela
+vn|Vietnam
+vu|Vanuatu
+ws|Samoa
+ye|Yemen
+za|South Africa
+zm|Zambia
+zw|Zimbabwe
+`.trim().split("\n").map(entry => {
+      const [code, country] = entry.split("|");
+      return { code, country };
+    });
+    const ALL_COUNTRIES_DB = WORLD_COUNTRIES.map(country =>
+      COUNTRIES_DB.find(item => item.code === country.code) || country
+    );
+
     function shuffleArray(items) {
       const shuffled = [...items];
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -859,7 +1684,7 @@
     class FlagGameController {
       constructor() {
         this.mode = 'flag'; // 'flag' | 'capitals' | 'famous' | 'blitz'
-        this.questionOrder = shuffleArray(COUNTRIES_DB);
+        this.questionOrder = shuffleArray(ALL_COUNTRIES_DB);
         this.currentIndex = 0;
         this.hearts = 5;
         this.streak = 4;
@@ -880,19 +1705,34 @@
         this.optionsContainer = document.getElementById("optionsContainer");
         this.timerTrack = document.getElementById("timerTrack");
         this.timerFill = document.getElementById("timerFill");
+        this.timerText = document.getElementById("timerText");
+        this.themeToggle = document.getElementById("themeToggle");
+        this.themeIcon = document.getElementById("themeIcon");
+        this.themeLabel = document.getElementById("themeLabel");
 
         this.bottomSheet = document.getElementById("bottomSheet");
         this.factDossier = document.getElementById("factDossier");
         this.actionBtn = document.getElementById("actionBtn");
 
         this.feedbackTitle = document.getElementById("feedbackTitle");
+        this.factCapitalLabel = document.getElementById("factCapitalLabel");
         this.factCapital = document.getElementById("factCapital");
+        this.factRegionLabel = document.getElementById("factRegionLabel");
         this.factRegion = document.getElementById("factRegion");
+        this.factFamousLabel = document.getElementById("factFamousLabel");
         this.factFamous = document.getElementById("factFamous");
+        this.factDidYouKnowLabel = document.getElementById("factDidYouKnowLabel");
         this.factDidYouKnow = document.getElementById("factDidYouKnow");
 
         this.victoryOverlay = document.getElementById("victoryOverlay");
         this.gameOverOverlay = document.getElementById("gameOverOverlay");
+      }
+
+      toggleTheme() {
+        const isDark = document.body.classList.toggle("dark-mode");
+        this.themeToggle.setAttribute("aria-pressed", isDark);
+        this.themeIcon.innerText = isDark ? "☀️" : "🌙";
+        this.themeLabel.innerText = isDark ? "Light mode" : "Dark mode";
       }
 
       startFromSplash() {
@@ -927,7 +1767,10 @@
           this.questionTitle.innerText = "Which country's flag is this?";
           promptText = "Inspect the colors, crests, and shape of this flag!";
           correctAnswer = item.country;
-          optionsList = [item.country, ...item.distractorCountries];
+          const distractors = shuffleArray(
+            ALL_COUNTRIES_DB.filter(country => country.code !== item.code)
+          ).slice(0, 3).map(country => country.country);
+          optionsList = [item.country, ...distractors];
         } else if (this.mode === 'capitals') {
           this.questionTitle.innerText = `What is the capital of ${item.country}?`;
           promptText = `Look at the flag of ${item.country}. Can you name its capital city?`;
@@ -968,10 +1811,16 @@
         if (this.mode === 'blitz') {
           this.timerTrack.style.display = "block";
           this.timeLeft = 10;
+          this.timerText.innerText = `${this.timeLeft}s`;
+          this.timerFill.classList.remove("urgent");
           this.timerFill.style.width = "100%";
+          this.timerTrack.setAttribute("aria-valuenow", this.timeLeft);
           this.timerInterval = setInterval(() => {
             this.timeLeft--;
             this.timerFill.style.width = `${(this.timeLeft / 10) * 100}%`;
+            this.timerText.innerText = `${this.timeLeft}s`;
+            this.timerTrack.setAttribute("aria-valuenow", this.timeLeft);
+            this.timerFill.classList.toggle("urgent", this.timeLeft <= 3);
             if (this.timeLeft <= 0) {
               clearInterval(this.timerInterval);
               this.timeOut();
@@ -1017,22 +1866,30 @@
         const isCorrect = this.selectedChoice === this.currentCorrectAnswer;
 
         // Populate learning facts
-        this.factCapital.innerText = item.capital;
-        this.factRegion.innerText = `${item.continent} ${item.flagEmoji}`;
-        this.factFamous.innerText = item.famousFor;
-        this.factDidYouKnow.innerText = item.didYouKnow;
+        const hasCountryFacts = Boolean(item.capital);
+        this.factCapitalLabel.innerText = hasCountryFacts ? "🏛️ Capital City" : "🏳️ Country";
+        this.factCapital.innerText = item.capital || item.country;
+        this.factRegionLabel.innerText = hasCountryFacts ? "📍 Continent & Flag" : "🆔 Flag Code";
+        this.factRegion.innerText = hasCountryFacts
+          ? `${item.continent} ${item.flagEmoji}`
+          : item.code.toUpperCase();
+        this.factFamousLabel.innerText = hasCountryFacts ? "🌟 Famous For:" : "🏴 About this flag:";
+        this.factFamous.innerText = item.famousFor || `The national flag of ${item.country}.`;
+        this.factDidYouKnowLabel.innerText = hasCountryFacts ? "💡 Fact:" : "💡 Image source:";
+        this.factDidYouKnow.innerText = item.didYouKnow
+          || `FlagCDN serves this flag image using the code ${item.code.toUpperCase()}.`;
 
         if (isCorrect) {
           sound.playSuccess();
           this.bottomSheet.classList.add("correct");
-          this.feedbackTitle.innerHTML = `<span>Awesome! That's ${item.country} ${item.flagEmoji}</span>`;
+          this.feedbackTitle.innerHTML = `<span>Awesome! That's ${item.country} ${item.flagEmoji || ""}</span>`;
           this.mascotBubble.innerText = "Spot on! Look at what this nation is famous for!";
         } else {
           sound.playError();
           this.hearts--;
           this.heartCount.innerText = this.hearts;
           this.bottomSheet.classList.add("wrong");
-          this.feedbackTitle.innerHTML = `<span>Correct answer: ${this.currentCorrectAnswer}</span>`;
+          this.feedbackTitle.innerHTML = `<span>Correct answer: ${this.currentCorrectAnswer} ${item.flagEmoji || ""}</span>`;
           this.mascotBubble.innerText = "Don't sweat it! Review the facts below to memorize it!";
 
           const app = document.querySelector(".app-viewport");
@@ -1066,7 +1923,10 @@
         clearInterval(this.timerInterval);
         this.hearts = 5;
         this.heartCount.innerText = "5";
-        this.questionOrder = shuffleArray(COUNTRIES_DB);
+        const countries = this.mode === 'flag' || this.mode === 'blitz'
+          ? ALL_COUNTRIES_DB
+          : COUNTRIES_DB;
+        this.questionOrder = shuffleArray(countries);
         this.currentIndex = 0;
         this.victoryOverlay.classList.remove("active");
         this.gameOverOverlay.classList.remove("active");
