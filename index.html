@@ -799,6 +799,8 @@
       font-size: 13px;
     }
 
+    .stats-tray[hidden] { display: none; }
+
     .stat-badge {
       padding: 4px 8px;
       border-radius: 999px;
@@ -1211,7 +1213,7 @@
         <div class="progress-bar" id="progressBar"></div>
       </div>
       <div class="stats-tray">
-        <div class="stat-badge streak">🔥 <span id="streakCount">4</span></div>
+        <div class="stat-badge streak">🔥 <span id="streakCount">0</span></div>
         <div class="stat-badge hearts">❤️ <span id="heartCount">5</span></div>
       </div>
     </header>
@@ -1671,6 +1673,208 @@ zw|Zimbabwe
       COUNTRIES_DB.find(item => item.code === country.code) || country
     );
 
+    const FLAG_DESCRIPTIONS = {
+      ad: "Three bold vertical bands—blue, yellow, and red—give Andorra a bright mountain-country look, with its coat of arms adding a tiny heraldic story in the middle.",
+      ae: "A red strip frames green, white, and black horizontal bands: four strong colors that make this flag instantly recognizable.",
+      af: "A white field carries black Arabic calligraphy, creating a striking, minimalist design centered on its inscription.",
+      ag: "A golden sun rises inside a black triangle, framed by red edges and blue-and-white stripes—Antigua and Barbuda puts sunrise right on its flag.",
+      al: "A dramatic black double-headed eagle spreads its wings across a vivid red background.",
+      am: "Red, blue, and orange horizontal stripes make a simple, warm tricolor with a distinctly sunny finish.",
+      ao: "Red and black halves are joined by a golden gear, machete, and star—a bold emblem with plenty to spot.",
+      ar: "Two sky-blue bands frame a white center, where a golden Sun of May shines like a tiny sunrise.",
+      at: "A crisp white stripe sits between two vivid red bands: Austria keeps its flag wonderfully simple.",
+      au: "The Union Jack shares a deep-blue field with the large Commonwealth Star and the Southern Cross constellation.",
+      az: "Blue, red, and green horizontal stripes are topped with a white crescent and eight-pointed star.",
+      ba: "A golden triangle cuts into a blue field while a trail of white stars sweeps down its edge.",
+      bb: "Two ultramarine panels frame a golden center stripe, finished with a black trident that looks like a bold little signature.",
+      bd: "A bright red disc floats slightly left of center on a deep-green field—simple, striking, and easy to recognize.",
+      be: "Black, yellow, and red vertical bands make a punchy tricolor, like three bold blocks of color side by side.",
+      bf: "Red above green, with a golden star right in the middle: Burkina Faso’s design is vivid and easy to pick out.",
+      bg: "White, green, and red horizontal stripes form a clean three-color stack.",
+      bh: "A white band meets a red field along a zigzag edge of five points—look closely at that distinctive sawtooth line.",
+      bi: "A white diagonal cross divides red and green panels, with three red stars inside a white circle at the center.",
+      bj: "A green strip runs down the hoist, while yellow and red fill the two horizontal panels.",
+      bn: "A golden field is crossed by diagonal black and white bands, with the national crest placed at the center.",
+      bo: "Red, yellow, and green horizontal bands make a bright tricolor, with Bolivia’s coat of arms in the middle.",
+      br: "A golden diamond sits on green, framing a blue globe sprinkled with stars and crossed by the banner “Ordem e Progresso.”",
+      bs: "A black triangle points into three aquamarine and golden bands—an energetic design inspired by sun, sea, and land.",
+      bt: "A white dragon stretches across diagonal golden-yellow and orange halves; this flag has one of the world’s most memorable creatures.",
+      bw: "A black horizontal stripe with slim white borders cuts across a pale-blue field.",
+      by: "Red and green horizontal panels are paired with a detailed white-and-red folk-pattern strip along the hoist.",
+      bz: "A royal-blue field is edged by thin red stripes, with a detailed coat of arms surrounded by a wreath at the center.",
+      ca: "A single red maple leaf sits between two red side panels on white—one bold leaf, no guesswork.",
+      cd: "A golden star shines in the upper hoist corner while a red diagonal stripe, edged in yellow, crosses a sky-blue field.",
+      cf: "A red vertical stripe crosses blue, white, green, and yellow bands, with a small golden star near the top-left.",
+      cg: "Green and red corners meet across a wide golden diagonal stripe.",
+      ch: "A bold white equal-armed cross sits centered on a square red field.",
+      ci: "Orange, white, and green vertical stripes form a neat tricolor from hoist to fly.",
+      cl: "A white band sits above red, while a blue canton carries one bright white star.",
+      cm: "Green, red, and yellow vertical bands meet at a golden star in the middle.",
+      cn: "One large golden star and four smaller stars cluster on a vivid red field.",
+      co: "A broad golden stripe takes the top half, above blue and red bands in a classic three-color stack.",
+      cr: "Blue and white stripes frame a wider red center band, creating a balanced five-stripe design.",
+      cu: "Blue and white stripes alternate beside a red triangle holding one white star.",
+      cv: "A circle of ten golden stars sits above slim red and white stripes on a deep-blue field.",
+      cy: "A copper-colored map of the island rests above two olive branches on a clean white field.",
+      cz: "A blue triangle at the hoist points into white and red horizontal halves.",
+      de: "Black, red, and gold horizontal bands make Germany’s familiar three-color flag.",
+      dj: "A white triangle with a red star points across pale-blue and green horizontal halves.",
+      dk: "A white Nordic cross stretches across a red field, shifted toward the hoist.",
+      dm: "A golden-edged cross divides green panels; a sisserou parrot, red disc, and ring of stars make the center a mini nature scene.",
+      do: "A white cross divides blue and red quarters, with the national coat of arms right at the crossing.",
+      dz: "Green and white halves meet beneath a red crescent and star.",
+      ec: "A golden upper band is twice the height of the blue and red bands below it, with the coat of arms centered.",
+      ee: "Three equal horizontal stripes—blue, black, and white—make a clean, high-contrast design.",
+      eg: "Red, white, and black horizontal bands frame Egypt’s golden Eagle of Saladin.",
+      er: "A broad red triangle divides green and blue sections, with a golden olive wreath and branch on the hoist side.",
+      es: "A wide golden center stripe sits between two red bands, with Spain’s coat of arms toward the hoist.",
+      et: "Green, yellow, and red bands surround a blue central disc bearing a golden star emblem.",
+      fi: "A blue Nordic cross stands out against a plain white field.",
+      fj: "A light-blue field carries the Union Jack and a shield filled with familiar island symbols.",
+      fm: "Four white stars form a diamond on a calm sky-blue background.",
+      fr: "Blue, white, and red vertical bands form France’s instantly recognizable tricolor.",
+      ga: "Green, golden yellow, and blue horizontal bands stack from top to bottom.",
+      gb: "Red and white crosses overlap in a layered pattern on deep blue—the Union Jack’s unmistakable geometry.",
+      gd: "Red borders and stars frame a green-and-yellow design, with a golden nutmeg tucked into the left star.",
+      ge: "One large red cross and four smaller crosses decorate a white field.",
+      gh: "Red, golden yellow, and green horizontal bands meet at a single black star.",
+      gm: "Red and green bands are separated by narrow white lines and a bold blue center stripe.",
+      gn: "Red, golden yellow, and green vertical stripes form a bright West African tricolor.",
+      gq: "Green, white, and red bands meet a blue triangle at the hoist, with the coat of arms centered on white.",
+      gr: "Blue and white stripes pair with a white cross inside a blue square at the hoist.",
+      gt: "Two sky-blue side bands frame a white center bearing Guatemala’s detailed coat of arms.",
+      gw: "A red vertical panel with a black star meets golden-yellow and green horizontal bands.",
+      gy: "A golden arrow edged in white and black points across a green field from a red triangle.",
+      hn: "Five blue stars sit across a white center stripe between two deep-blue bands.",
+      hr: "Red, white, and blue stripes carry a colorful checkerboard shield topped by a crown of smaller shields.",
+      ht: "Blue and red horizontal panels frame a small white center panel with Haiti’s coat of arms.",
+      hu: "Red, white, and green horizontal bands form a simple three-color design.",
+      id: "A red band sits above a white band in Indonesia’s clean, two-color flag.",
+      ie: "Green, white, and orange vertical bands make Ireland’s flag a bright tricolor from hoist to fly.",
+      il: "Two blue horizontal stripes frame a blue Star of David on white.",
+      in: "Saffron, white, and green bands surround a navy-blue Ashoka Chakra wheel with many fine spokes.",
+      iq: "Red, white, and black horizontal bands carry green Arabic calligraphy through the center.",
+      ir: "Green, white, and red horizontal bands frame a red emblem, with a repeated geometric border along the joins.",
+      is: "A red Nordic cross with a white outline sits on a deep-blue field.",
+      it: "Green, white, and red vertical bands make Italy’s clean, classic tricolor.",
+      jm: "A golden diagonal cross separates green top-and-bottom triangles from black side triangles.",
+      jo: "Black, white, and green bands meet a red triangle holding a small white seven-pointed star.",
+      jp: "A single crimson disc sits at the center of a white field—the rising-sun design in its simplest form.",
+      ke: "Black, red, and green bands are separated by white lines, with a traditional shield and crossed spears at center.",
+      kg: "A golden sun with crossing lines fills the center of a vivid red field.",
+      kh: "A white Angkor Wat temple stands out on a red center band between two deep-blue bands.",
+      ki: "A golden frigatebird flies above a rising sun on red, while blue-and-white waves fill the lower half.",
+      km: "Four colored horizontal bands meet a green triangle with a white crescent and four stars.",
+      kn: "A black diagonal stripe edged in yellow crosses green and red fields, with two white stars along the stripe.",
+      kp: "A broad red center stripe, edged in white and blue, carries a white circle with a red star.",
+      kr: "A red-and-blue taegeuk sits on white, surrounded by four black trigrams in the corners.",
+      kw: "Green, white, and red horizontal bands extend from a black trapezoid at the hoist.",
+      kz: "A golden sun and soaring eagle sit on sky blue, with a decorative golden pattern along the hoist.",
+      la: "A wide blue center band holds a white disc, between two slimmer red bands.",
+      lb: "A green cedar tree stands in the white center stripe between two red bands.",
+      lc: "A black-and-white-edged golden triangle rises against a sky-blue field.",
+      li: "A golden crown sits near the hoist on the blue upper half, above a red lower half.",
+      lk: "A golden lion holding a sword stands on maroon, beside orange and green panels within a golden frame.",
+      lr: "Eleven red-and-white stripes sit below a blue canton with one large white star.",
+      ls: "Blue, white, and green horizontal bands frame a traditional black Basotho hat.",
+      lt: "Yellow, green, and red horizontal bands form a bright, uncomplicated tricolor.",
+      lu: "Red, white, and light-blue horizontal stripes make Luxembourg’s soft-toned tricolor.",
+      lv: "A narrow white stripe divides two broad dark-maroon bands.",
+      ly: "A black center stripe is framed by red and green bands, with a white crescent and star.",
+      ma: "A green five-pointed interlaced star sits centered on a red field.",
+      mc: "Red above white: Monaco’s flag is a clean two-band design.",
+      md: "Blue, yellow, and red vertical stripes frame a detailed eagle emblem on the yellow center.",
+      me: "A golden border surrounds a red field with a golden double-headed eagle and lion.",
+      mg: "A white vertical band meets red and green horizontal panels.",
+      mh: "A white star and orange sunbeam sit on a diagonal orange stripe across a blue field.",
+      mk: "Golden sun rays spread outward across a vivid red field from a central golden sun.",
+      ml: "Green, golden yellow, and red vertical stripes make Mali’s bold tricolor.",
+      mm: "Yellow, green, and red horizontal bands meet at a large white star in the center.",
+      mn: "Red side panels frame a blue center stripe; the golden Soyombo symbol sits near the hoist.",
+      mr: "A golden crescent and star sit on green, with narrow red stripes along the top and bottom.",
+      mt: "White and red vertical halves are paired with the George Cross in the upper hoist corner.",
+      mu: "Red, blue, yellow, and green horizontal stripes give Mauritius a four-color stack.",
+      mv: "A white crescent sits inside a green rectangle on a red field.",
+      mw: "A rising red sun appears above red, black, and green horizontal bands.",
+      mx: "Green, white, and red vertical bands frame an eagle-and-serpent emblem in the center.",
+      my: "Red-and-white stripes sit beneath a blue canton with a golden crescent and star.",
+      mz: "Green, black, and golden-yellow bands are divided by white lines; a red triangle carries a star, book, hoe, and rifle.",
+      na: "A red diagonal stripe edged in white crosses blue and green halves, with a golden sun in the upper corner.",
+      ne: "Orange and green bands frame a small orange disc on white.",
+      ng: "A white center stripe sits between two green vertical bands.",
+      ni: "Blue-and-white horizontal stripes meet a blue triangle containing the national coat of arms.",
+      nl: "Red, white, and blue horizontal bands form the Netherlands’ familiar tricolor.",
+      no: "A blue Nordic cross edged in white sits on a red field.",
+      np: "Two crimson pennants stack into the world’s only non-rectangular national flag, outlined in blue and marked with a moon and sun.",
+      nr: "A golden horizontal stripe and white star cross a blue field, placing Nauru just south of the equator.",
+      nz: "The Union Jack shares a deep-blue field with four red stars edged in white—the Southern Cross.",
+      om: "White, red, and green bands meet a red hoist panel bearing Oman’s national emblem.",
+      pa: "Four quarters alternate white and red-blue, each with a star of the opposite color.",
+      pe: "A white center stripe stands between two red vertical panels.",
+      pg: "A diagonal split sets a golden bird-of-paradise and stars against black and red triangles.",
+      ph: "A white triangle holds a golden sun and three stars beside blue and red horizontal bands.",
+      pk: "A white stripe at the hoist balances a deep-green field with a white crescent and star.",
+      pl: "White above red: two clean horizontal bands make Poland’s flag.",
+      ps: "Black, white, and green stripes meet a red triangle at the hoist.",
+      pt: "Green and red vertical panels meet at a detailed armillary sphere and shield.",
+      pw: "A golden moon sits slightly left of center on a light-blue field.",
+      py: "Red, white, and blue stripes carry different emblems on the front and reverse sides.",
+      qa: "A serrated edge with many points separates white from Qatar’s deep maroon field.",
+      ro: "Blue, yellow, and red vertical bands form Romania’s vivid tricolor.",
+      rs: "Red, blue, and white horizontal bands carry Serbia’s coat of arms near the hoist.",
+      ru: "White, blue, and red horizontal stripes form Russia’s familiar tricolor.",
+      rw: "A broad sky-blue stripe sits above yellow and green, with a golden sun in the upper corner.",
+      sa: "White Arabic calligraphy and a sword stretch across a green field.",
+      sb: "A yellow diagonal stripe divides blue and green halves, with five white stars in the blue corner.",
+      sc: "Five colorful diagonal rays—blue, yellow, red, white, and green—fan out from the lower hoist.",
+      sd: "Red, white, and black horizontal bands meet a green triangle at the hoist.",
+      se: "A golden Nordic cross sits on a bright-blue field.",
+      sg: "A white crescent and five stars sit on red above a white lower half.",
+      si: "White, blue, and red bands carry Slovenia’s coat of arms near the hoist.",
+      sk: "White, blue, and red horizontal bands carry a double cross on three blue hills inside the shield.",
+      sl: "Green, white, and blue horizontal stripes stack in a calm, simple design.",
+      sm: "White above light blue, with San Marino’s coat of arms centered on the two bands.",
+      sn: "Green, golden yellow, and red vertical stripes meet at a green star in the center.",
+      so: "A single white five-pointed star sits on a sky-blue field.",
+      sr: "Green and white stripes frame a broad red center stripe, where a golden star shines.",
+      ss: "Black, red, and green bands are separated by white lines, with a blue triangle and golden star at the hoist.",
+      st: "A red triangle meets green horizontal bands, with two black stars across the golden center stripe.",
+      sv: "Blue-and-white horizontal bands frame El Salvador’s coat of arms at the center.",
+      sy: "Green, white, and black horizontal bands carry three red stars across the center stripe.",
+      sz: "Blue, yellow, and red bands frame a large Nguni shield with decorative spears.",
+      td: "Blue, golden yellow, and red vertical stripes make Chad’s clean tricolor.",
+      tg: "Five green-and-yellow stripes are paired with a red canton and one white star.",
+      th: "Red, white, and broad blue horizontal bands form a balanced five-stripe pattern.",
+      tj: "Red, white, and green bands frame a golden crown surrounded by seven stars.",
+      tl: "A yellow triangle sits inside a larger black triangle on red, with a white star near the hoist.",
+      tm: "A green field is decorated with carpet patterns along the hoist and a white crescent with five stars.",
+      tn: "A red crescent and star sit inside a white disc at the center of a red field.",
+      to: "A red cross sits in a white canton above a red field.",
+      tr: "A white crescent and star shine on a vivid red field.",
+      tt: "A bold black diagonal stripe edged in white cuts across the red field.",
+      tv: "The Union Jack sits above a cluster of white stars on a sky-blue field.",
+      tz: "A black diagonal stripe edged in yellow divides green and blue triangles.",
+      ua: "A blue upper half sits over a golden-yellow lower half in a clean two-color design.",
+      ug: "Black, yellow, and red stripes repeat twice, with a grey crowned crane at the center.",
+      us: "Thirteen red-and-white stripes sit below a blue canton filled with white stars.",
+      uy: "Nine blue-and-white stripes accompany a golden Sun of May in the white canton.",
+      uz: "Blue, white, and green horizontal bands are separated by thin red lines, with a crescent and stars in the upper corner.",
+      va: "Two vertical halves—gold and white—pair with crossed keys and the papal tiara on the white side.",
+      vc: "Three green diamonds form a V on blue, yellow, and green vertical bands.",
+      ve: "Yellow, blue, and red horizontal bands carry an arc of eight white stars across the blue.",
+      vn: "One large golden star sits in the center of a bright-red field.",
+      vu: "A golden-edged black Y-shape branches across green and red, with a boar’s tusk emblem near the hoist.",
+      ws: "A blue canton with white stars sits in the upper corner of a red field.",
+      ye: "Red, white, and black horizontal bands form Yemen’s simple three-color flag.",
+      za: "Green, black, gold, white, red, and blue meet in a distinctive Y-shaped design.",
+      zm: "A soaring orange eagle sits above red, black, and orange stripes in the lower-right corner of a green field.",
+      zw: "Seven stripes meet a white triangle with a red star and golden Zimbabwe Bird."
+    };
+
+    ALL_COUNTRIES_DB.forEach(country => {
+      country.flagDescription = FLAG_DESCRIPTIONS[country.code];
+    });
+
     function shuffleArray(items) {
       const shuffled = [...items];
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -1699,6 +1903,7 @@ zw|Zimbabwe
         this.progressBar = document.getElementById("progressBar");
         this.heartCount = document.getElementById("heartCount");
         this.streakCount = document.getElementById("streakCount");
+        this.statsTray = document.querySelector(".stats-tray");
         this.questionTitle = document.getElementById("questionTitle");
         this.mascotBubble = document.getElementById("mascotBubble");
         this.flagImage = document.getElementById("flagImage");
@@ -1726,6 +1931,11 @@ zw|Zimbabwe
 
         this.victoryOverlay = document.getElementById("victoryOverlay");
         this.gameOverOverlay = document.getElementById("gameOverOverlay");
+        this.updateModeVisibility();
+      }
+
+      updateModeVisibility() {
+        this.statsTray.hidden = this.mode !== "blitz";
       }
 
       toggleTheme() {
@@ -1743,6 +1953,7 @@ zw|Zimbabwe
 
       switchMode(newMode) {
         this.mode = newMode;
+        this.updateModeVisibility();
         document.querySelectorAll(".mode-pill").forEach(p => p.classList.remove("active"));
         event.currentTarget.classList.add("active");
         this.restartLesson();
@@ -1765,7 +1976,7 @@ zw|Zimbabwe
 
         if (this.mode === 'flag' || this.mode === 'blitz') {
           this.questionTitle.innerText = "Which country's flag is this?";
-          promptText = "Inspect the colors, crests, and shape of this flag!";
+          promptText = item.flagDescription;
           correctAnswer = item.country;
           const distractors = shuffleArray(
             ALL_COUNTRIES_DB.filter(country => country.code !== item.code)
@@ -1881,13 +2092,21 @@ zw|Zimbabwe
 
         if (isCorrect) {
           sound.playSuccess();
+          if (this.mode === "blitz") {
+            this.streak++;
+            this.streakCount.innerText = this.streak;
+          }
           this.bottomSheet.classList.add("correct");
           this.feedbackTitle.innerHTML = `<span>Awesome! That's ${item.country} ${item.flagEmoji || ""}</span>`;
           this.mascotBubble.innerText = "Spot on! Look at what this nation is famous for!";
         } else {
           sound.playError();
-          this.hearts--;
-          this.heartCount.innerText = this.hearts;
+          if (this.mode === "blitz") {
+            this.hearts--;
+            this.heartCount.innerText = this.hearts;
+            this.streak = 0;
+            this.streakCount.innerText = this.streak;
+          }
           this.bottomSheet.classList.add("wrong");
           this.feedbackTitle.innerHTML = `<span>Correct answer: ${this.currentCorrectAnswer} ${item.flagEmoji || ""}</span>`;
           this.mascotBubble.innerText = "Don't sweat it! Review the facts below to memorize it!";
@@ -1896,7 +2115,7 @@ zw|Zimbabwe
           app.classList.add("shake-anim");
           setTimeout(() => app.classList.remove("shake-anim"), 400);
 
-          if (this.hearts <= 0) {
+          if (this.mode === "blitz" && this.hearts <= 0) {
             this.gameOverOverlay.classList.add("active");
             return;
           }
@@ -1922,7 +2141,10 @@ zw|Zimbabwe
       restartLesson() {
         clearInterval(this.timerInterval);
         this.hearts = 5;
+        this.streak = 0;
         this.heartCount.innerText = "5";
+        this.streakCount.innerText = "0";
+        this.updateModeVisibility();
         const countries = this.mode === 'flag' || this.mode === 'blitz'
           ? ALL_COUNTRIES_DB
           : COUNTRIES_DB;
